@@ -1,5 +1,6 @@
 # Bootcamp
 SQL Server Query Script
+
 This Python script connects to a SQL Server database (AdventureWorksDW2022) using pyodbc and performs some basic SQL queries on the DimEmployee table.
 
 Requirements
@@ -12,9 +13,6 @@ SQL Server ODBC Driver: Required to connect Python to SQL Server.
 Install Dependencies
 To install the required Python package (pyodbc), run the following command:
 
-bash
-Copy
-Edit
 pip install pyodbc
 Install SQL Server ODBC Driver
 You also need the SQL Server ODBC Driver to connect to the database.
