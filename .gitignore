@@ -1,4 +1,14 @@
-venv/
+# Ignore Python bytecode files
 __pycache__/
 *.pyc
-.env
+
+# Ignore virtual environment
+venv/
+
+# Ignore IDE config files (PyCharm, VSCode, etc.)
+.idea/
+.vscode/
+
+# Ignore system files (macOS, Windows, etc.)
+.DS_Store
+Thumbs.db
