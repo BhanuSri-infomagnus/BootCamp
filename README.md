@@ -24,8 +24,7 @@ On Linux/macOS: Follow installation guide
 Setup
 Clone the repository:
 
-git clone https://github.com/yourusername/yourrepository.git
-cd yourrepository
+git clone https://github.com/BhanuSri-infomagnus/Bootcamp.git
 
 Configure the database connection:
 
@@ -34,7 +33,7 @@ Open the script and replace the following with your own database details:
 conn_str = (
     "DRIVER=SQL Server;"
     "SERVER=your-server-name;"   # Replace with your server name
-    "DATABASE=AdventureWorksDW2022;"   # Database name
+    "DATABASE=your-databasename;"   # Database name
     "UID=your-username;"         # SQL Server username
     "PWD=your-password"          # SQL Server password
 )
