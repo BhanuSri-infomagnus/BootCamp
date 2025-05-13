@@ -62,8 +62,7 @@ except Exception as ex:
     print("An unexpected error occurred:", ex)
 finally:
     # Close the connection
-    try:
+    if(conn):
         conn.close()
         print("Database connection closed.")
-    except:
-        pass
+    
