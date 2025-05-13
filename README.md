@@ -9,15 +9,19 @@ Includes connection configuration and sample queries for employees.
 
 # Installation
 # Prerequisites
-Python 3.1+
 
 SQL Server ODBC driver installed on your machine (check your SQL Server version for the appropriate driver).
+Python 3.13.3
+SQL Server running locally or remotely
+ODBC Driver 17 (or 18) for SQL Server
+Python Libraries:
+pyodbc
+python-dotenv
 
 # Step-by-Step Instructions
 Clone the repository:
 
 git clone https://github.com/BhanuSri-infomagnus/Bootcamp.git
-cd Bootcamp
 
 # Set up a virtual environment:
 
@@ -90,6 +94,20 @@ pyodbc: Python ODBC interface for connecting to SQL databases.
 You can install them by running:
 
 pip install -r requirements.txt
+
+## 📝 Setup .env File
+
+1. Copy the `.env.example` file and rename it to `.env`.
+
+2. Open the `.env` file and replace the placeholders with your actual SQL Server connection details.
+
+Example:
+
+UID=your_sql_username
+password_value=your_sql_password
+SERVER=localhost\SQLEXPRESS
+DATABASE=AdventureWorksDW2022
+
 
 # .gitignore Example
 This repository contains a .gitignore file to ensure that unnecessary files, such as the virtual environment, are not committed to the Git repository.
