@@ -7,17 +7,17 @@ load_dotenv()
 
 # Read credentials and settings from environment variables
 UID = os.getenv("UID")
-PWD = os.getenv("PWD")
+password_value = os.getenv("password_value")
 SERVER = os.getenv("SERVER")
 DATABASE = os.getenv("DATABASE")
-
+print("Test Herer",password_value,UID,SERVER,DATABASE)
 # Create the connection string
 conn_str = (
-    f"DRIVER=SQL Server;"
+    "DRIVER={ODBC Driver 17 for SQL Server};"
     f"SERVER={SERVER};"
     f"DATABASE={DATABASE};"
     f"UID={UID};"
-    f"PWD={PWD};"
+    f"PWD={password_value};"
 )
 
 try:
