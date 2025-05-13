@@ -10,7 +10,6 @@ UID = os.getenv("UID")
 password_value = os.getenv("password_value")
 SERVER = os.getenv("SERVER")
 DATABASE = os.getenv("DATABASE")
-print("Test Herer",password_value,UID,SERVER,DATABASE)
 # Create the connection string
 conn_str = (
     "DRIVER={ODBC Driver 17 for SQL Server};"
