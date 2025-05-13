@@ -60,7 +60,7 @@ import pyodbc
 
 # Set up the database connection
 conn = pyodbc.connect(
-    'DRIVER={SQL Server};'
+    'DRIVER={SQL Server};' 
     'SERVER=your_server_name;'
     'DATABASE=AdventureWorksDW2022;'
     'UID=your_username;'
