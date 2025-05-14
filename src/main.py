@@ -1,17 +1,17 @@
 
 from json_py import DatabaseConnector  
 import json
+import os
+from dotenv import load_dotenv
 
 
 def main():
-    db = DatabaseConnector(
-        server='DESKTOP-OK8NL61\\SQLEXPRESS',
-        database='AdventureWorksDW2022',
-        username='Bhanu',
-        password='admin'
-        )
+    load_dotenv()
     
     try:
+        
+        db = DatabaseConnector()
+        
         country_data = {
             "country": "Afghanistan",
             "capital": "Kabul",
@@ -48,9 +48,8 @@ def main():
         print(f"An error occurred: {e}")
     finally:
         # Ensure connection is closed
-        if(db):
+        if 'db' in locals():
             db.close()
             print("\nDatabase connection closed.")
-
 if __name__ == "__main__":
     main()
