@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Read credentials and settings from environment variables
-UID = os.getenv("UID")
-password_value = os.getenv("password_value")
+USERID = os.getenv("USERID")
+PASSWORD = os.getenv("PASSWORD")
 SERVER = os.getenv("SERVER")
 DATABASE = os.getenv("DATABASE")
 # Create the connection string
@@ -15,8 +15,8 @@ conn_str = (
     "DRIVER={ODBC Driver 17 for SQL Server};"
     f"SERVER={SERVER};"
     f"DATABASE={DATABASE};"
-    f"UID={UID};"
-    f"PWD={password_value};"
+    f"UID={USERID};"
+    f"PWD={PASSWORD};"
 )
 
 try:
