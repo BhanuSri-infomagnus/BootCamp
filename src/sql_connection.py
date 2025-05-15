@@ -33,7 +33,7 @@ try:
     cursor.execute("SELECT gender, count(distinct EmployeeKey) FROM DimEmployee GROUP BY gender")
     print("Employees by gender:")
     for row in cursor.fetchall():
-        print(row)
+        print(f"{row[0]}: {row[1]}")
 
     # Query 3: Count where status = 'current'
     cursor.execute("SELECT count(distinct EmployeeKey) FROM DimEmployee WHERE Status='current'")
@@ -41,7 +41,7 @@ try:
         print("Currently active employees:", row[0])
 
     # Query 4: Top 10 full names
-    cursor.execute("SELECT TOP 10 concat(FirstName, LastName) FROM DimEmployee")
+    cursor.execute("SELECT TOP 10 CONCAT(FirstName, ' ', LastName) FROM DimEmployee")
     print("Top 10 employees:")
     for row in cursor.fetchall():
         print(row[0])
@@ -65,4 +65,3 @@ finally:
     if(conn):
         conn.close()
         print("Database connection closed.")
-    
