@@ -27,13 +27,37 @@ on s.product_id=m.product_id group by product_name order by COUNT(s.product_id) 
 
 --5. Which item was the most popular for each customer?
 
+select customer_id,product_id
+from
+(SELECT   customer_id,product_id,RANK()
+over(PARTITION by customer_id order by count(product_id) desc) as most_popular
+ from sales
+group by customer_id,product_id) ranked
+where most_popular=1;
 
 --6. Which item was purchased first by the customer after they became a member?
 
-
+SELECT customer_id,product_id
+from
+(SELECT s.customer_id,s.product_id,RANK() 
+over(PARTITION by s.customer_id ORDER by s.order_date) as Rnk
+from sales as s 
+inner join members as m
+on s.customer_id=m.customer_id
+where s.order_date>m.join_date)
+ ranked where Rnk=1;
 
 --7. Which item was purchased just before the customer became a member?
 
 
+SELECT customer_id,product_id
+from
+(SELECT s.customer_id,s.product_id,ROW_NUMBER() 
+over(PARTITION by s.customer_id ORDER by s.order_date desc) as Rnk
+from sales as s 
+inner join members as m
+on s.customer_id=m.customer_id
+where s.order_date<m.join_date)
+ ranked where Rnk=1;
 
 -- 8. What is the total items and amount spent for each member before they became a member?
