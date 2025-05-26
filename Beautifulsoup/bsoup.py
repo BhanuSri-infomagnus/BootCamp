@@ -33,7 +33,7 @@ for src in soup.find_all('img'):
             img_data = requests.get(image_url).content
             img_ext = os.path.splitext(image_url)[-1].lower()
             base_name = src.get('alt') or os.path.splitext(image_url.split('/')[-1])[0]
-            # Convert webp or unsupported formats to jpg using PIL
+           
             if img_ext not in ['.jpg', '.jpeg', '.png']:
                 img = Image.open(io.BytesIO(img_data)).convert('RGB')
                 img_name = f'{base_name}.jpg'
