@@ -1,53 +1,109 @@
-from bs4 import BeautifulSoup
 import requests
-from fpdf import FPDF
-from PIL import Image
+from bs4 import BeautifulSoup
+from urllib.parse import urljoin, urlparse
 import os
-import io
+import time
+import hashlib
 
-html_file = requests.get('https://www.infomagnus.com/').text
+# Initialize sets and lists
+visited_urls = set()
+all_text = []
+all_links = set()
+all_metadata = []
 
-soup= BeautifulSoup(html_file, 'html.parser')
+# Base domain to restrict the crawler
+base_domain = "https://www.infomagnus.com"
 
-title= soup.title
-print('Title:', title.text)
+# Output folders
+os.makedirs("scraped_data", exist_ok=True)
+os.makedirs("scraped_data/images", exist_ok=True)
 
-text_content = ""
-for tag in soup.find_all(['title', 'h1', 'h2', 'h3', 'h4', 'p', 'li', 'a', 'div', 'span']):
-    text= tag.get_text(strip=True)
-    if text:
-        text_content += text + ' '
-print('Text Content:', text_content)
+def is_valid_url(url):
+    parsed = urlparse(url)
+    return bool(parsed.netloc) and bool(parsed.scheme) and base_domain in url
 
-pdf = FPDF()
-pdf.add_page()
-pdf.set_font("Arial", size=12)
-for line in text_content.split('\n'):
-    pdf.multi_cell(0, 10, line)
+def save_text():
+    with open("scraped_data/text.txt", "w", encoding="utf-8") as f:
+        for line in all_text:
+            f.write(line + "\n")
 
+def save_links():
+    with open("scraped_data/links.txt", "w", encoding="utf-8") as f:
+        for link in all_links:
+            f.write(link + "\n")
 
-for src in soup.find_all('img'):
-    image_url = src.get('src')
-    if image_url:
-        try:
-            img_data = requests.get(image_url).content
-            img_ext = os.path.splitext(image_url)[-1].lower()
-            base_name = src.get('alt') or os.path.splitext(image_url.split('/')[-1])[0]
-           
-            if img_ext not in ['.jpg', '.jpeg', '.png']:
-                img = Image.open(io.BytesIO(img_data)).convert('RGB')
-                img_name = f'{base_name}.jpg'
-                img.save(img_name, 'JPEG')
-            else:
-                img_name = f'{base_name}{img_ext if img_ext in [".jpg", ".jpeg", ".png"] else ".jpg"}'
-                with open(img_name, 'wb') as handler:
-                    handler.write(img_data)
-            pdf.add_page()
-            pdf.image(img_name, x=10, y=10, w=pdf.w - 20)
-            print(f'Downloaded and added to PDF: {img_name}')
-            os.remove(img_name)
-        except Exception as e:
-            print(f'Failed to download or convert {image_url}: {e}')
+def save_metadata():
+    with open("scraped_data/metadata.txt", "w", encoding="utf-8") as f:
+        for meta in all_metadata:
+            f.write(str(meta) + "\n")
 
-pdf.output('infomagnus.pdf')
-print("✅ PDF saved: infomagnus.pdf")
+def download_image(img_url):
+    try:
+        if not img_url:
+            return
+        headers = {'User-Agent': 'Mozilla/5.0'}
+        response = requests.get(img_url, headers=headers, timeout=5)
+        if response.status_code == 200:
+            ext = os.path.splitext(urlparse(img_url).path)[-1].split('?')[0]
+            if not ext or len(ext) > 5:
+                ext = ".jpg"  # Default extension
+            filename_hash = hashlib.md5(img_url.encode()).hexdigest()
+            filename = f"{filename_hash}{ext}"
+            filepath = os.path.join("scraped_data/images", filename)
+            with open(filepath, "wb") as f:
+                f.write(response.content)
+            print(f"Downloaded image: {img_url} -> {filepath}")
+        else:
+            print(f"Failed to download image (status {response.status_code}): {img_url}")
+    except Exception as e:
+        print(f"Failed to download image {img_url}: {e}")
+
+def extract_data_from_page(url):
+    try:
+        response = requests.get(url, timeout=10)
+        if response.status_code != 200:
+            return
+
+        soup = BeautifulSoup(response.content, "html.parser")
+
+        # Extract visible text
+        texts = soup.stripped_strings
+        page_text = "\n".join(texts)
+        all_text.append(f"--- TEXT FROM: {url} ---\n{page_text}\n")
+
+        # Extract metadata
+        meta_tags = soup.find_all("meta")
+        meta_info = {"url": url, "metadata": [meta.attrs for meta in meta_tags]}
+        all_metadata.append(meta_info)
+
+        # Extract and queue all links
+        for link_tag in soup.find_all("a", href=True):
+            full_url = urljoin(url, link_tag['href'])
+            if is_valid_url(full_url) and full_url not in visited_urls:
+                all_links.add(full_url)
+                crawl_website(full_url)
+
+        # Extract and download images
+        for img_tag in soup.find_all("img", src=True):
+            img_src = img_tag.get('src') or img_tag.get('data-src')
+            if img_src:
+                img_url = urljoin(url, img_src)
+                download_image(img_url)
+
+    except Exception as e:
+        print(f"Error scraping {url}: {e}")
+
+def crawl_website(url):
+    if url not in visited_urls:
+        visited_urls.add(url)
+        print(f"Scraping: {url}")
+        extract_data_from_page(url)
+        time.sleep(1)  # Be polite to server
+
+# Start crawling
+crawl_website(base_domain)
+
+# Save results
+save_text()
+save_links()
+save_metadata()
