@@ -4,6 +4,7 @@ from urllib.parse import urljoin, urlparse
 import os
 import time
 import hashlib
+import json
 
 # Initialize sets and lists
 visited_urls = set()
@@ -107,3 +108,36 @@ crawl_website(base_domain)
 save_text()
 save_links()
 save_metadata()
+
+# Collect all data per page
+pages_data = []
+
+for i, meta in enumerate(all_metadata):
+    page_entry = {
+        "url": meta["url"],
+        "metadata": meta["metadata"],
+        "text": "",      # Will fill below
+        "links": [],     # Will fill below
+        "images": []     # Will fill below
+    }
+    # Get text for this page
+    for text in all_text:
+        if text.startswith(f"--- TEXT FROM: {meta['url']} ---"):
+            page_entry["text"] = text
+            break
+    # Get links for this page
+    page_links = []
+    for link in all_links:
+        if link.startswith(meta["url"]):
+            page_links.append(link)
+    page_entry["links"] = page_links
+    # Get images for this page (by filename hash)
+    # If you want to store image URLs, you can collect them during download_image
+    # For now, we leave images as empty or you can enhance this part
+    pages_data.append(page_entry)
+
+# Save to JSON file
+with open("scraped_data/website_data.json", "w", encoding="utf-8") as f:
+    json.dump(pages_data, f, ensure_ascii=False, indent=2)
+
+print("✅ Data exported to scraped_data/website_data.json")
