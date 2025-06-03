@@ -1,5 +1,6 @@
 import requests
-from bs4 import BeautifulSoup
+
++rom bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
 import os
 import time
@@ -140,4 +141,4 @@ for i, meta in enumerate(all_metadata):
 with open("scraped_data/website_data.json", "w", encoding="utf-8") as f:
     json.dump(pages_data, f, ensure_ascii=False, indent=2)
 
-print("✅ Data exported to scraped_data/website_data.json")
+print("✅ Data exported to scraped_data/website_data.json") 
