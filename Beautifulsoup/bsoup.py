@@ -1,6 +1,5 @@
 import requests
-
-+rom bs4 import BeautifulSoup
+from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
 import os
 import time

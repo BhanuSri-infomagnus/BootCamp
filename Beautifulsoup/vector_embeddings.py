@@ -46,7 +46,6 @@ similarity_threshold = 0.5  # You can adjust this value
 
 shown = set()
 count = 0
-print("Top 5 unique similar results:")
 for rank, idx in enumerate(I[0]):
     text = texts[idx]
     link = links[idx]
